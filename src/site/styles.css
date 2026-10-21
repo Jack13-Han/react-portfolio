@@ -114,6 +114,7 @@ html[data-theme=dark] .cloud-path{background:rgba(21,22,18,.58);border-color:rgb
 
 /* Representative project showcase */
 .work-section{position:relative;isolation:isolate;overflow:hidden;padding:94px 0 110px;background:#111;color:#f2f1ef}
+.topbar:not(.topbar-scrolled){top:12px}
 .work-section::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.25;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,transparent,#000 15%,#000 90%,transparent)}
 .work-heading{width:min(1232px,calc(100% - 64px));margin:0 auto 34px;text-align:center}
 .work-heading .eyebrow{justify-content:center;color:#b7b5b0}
