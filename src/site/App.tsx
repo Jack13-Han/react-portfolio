@@ -39,6 +39,7 @@ export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => (localStorage.getItem('portfolio-theme') as 'light' | 'dark') || 'light');
   const [filter, setFilter] = useState<Filter>('all');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [roleIndex, setRoleIndex] = useState(0);
   const [activeImage, setActiveImage] = useState<Project | null>(null);
   const t = copy[language];
@@ -46,6 +47,12 @@ export default function App() {
 
   useEffect(() => { document.documentElement.lang = language; document.title = language === 'ja' ? 'ハン・ウェイ・トゥン — Web Developer' : language === 'my' ? 'ဟန်ဝေထွန်း — Web Developer' : 'Han Wai Htun — Web Developer'; localStorage.setItem('portfolio-language', language); }, [language]);
   useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem('portfolio-theme', theme); }, [theme]);
+  useEffect(() => {
+    const updateScrollState = () => setIsScrolled(window.scrollY > 64);
+    updateScrollState();
+    window.addEventListener('scroll', updateScrollState, { passive: true });
+    return () => window.removeEventListener('scroll', updateScrollState);
+  }, []);
   useEffect(() => { const timer = window.setInterval(() => setRoleIndex((index) => (index + 1) % t.role.length), 2600); return () => window.clearInterval(timer); }, [t.role]);
   useEffect(() => {
     if (!activeImage) return;
@@ -55,13 +62,13 @@ export default function App() {
   }, [activeImage]);
 
   return <>
-    <header className="topbar"><a className="wordmark" href="#home" aria-label="Han Wai Htun home">HW<span>.</span></a>
+    <div className="topbar-shell"><header className={isScrolled ? 'topbar topbar-scrolled' : 'topbar'}><a className="wordmark" href="#home" aria-label="Han Wai Htun home">HW<span>.</span></a>
       <button className="menu-toggle" aria-label={t.menu} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /></button>
       <nav className={menuOpen ? 'nav nav-open' : 'nav'} aria-label="Main navigation">{t.nav.map((item, index) => <a key={item} href={['#about', '#work', '#contact'][index]} onClick={() => setMenuOpen(false)}><span className="nav-index">0{index + 1}</span>{item}</a>)}
         <div className="nav-tools"><div className="language-switch" aria-label="Language">{(['en', 'ja', 'my'] as const).map((code) => <button key={code} aria-pressed={language === code} onClick={() => setLanguage(code)}>{code.toUpperCase()}</button>)}</div>
           <button className="theme-toggle" aria-label={theme === 'light' ? t.themeDark : t.themeLight} onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}><span>{theme === 'light' ? '◐' : '☼'}</span></button></div>
       </nav>
-    </header>
+    </header></div>
 
     <main id="home">
       <section className="hero page-wrap"><div className="hero-copy"><p className="eyebrow"><span className="status-dot" />{t.eyebrow}</p><h1>{t.intro}<br /><span className="hero-accent">{t.accent}</span></h1><div className="role-line"><span className="role-prefix">{t.rolePrefix}</span><span className="role-value" key={`${language}-${roleIndex}`}>{t.role[roleIndex]}</span><span className="cursor" /></div><p className="hero-summary">{t.summary}</p><div className="hero-actions"><a className="button button-dark" href="#work">{t.work}<Arrow /></a><span className="availability"><span className="status-dot" />{t.available}</span></div></div>
